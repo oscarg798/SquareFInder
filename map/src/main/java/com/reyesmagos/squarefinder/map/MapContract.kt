@@ -2,14 +2,17 @@ package com.reyesmagos.squarefinder.map
 
 import android.location.Location
 import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.reyesmagos.squarefinder.core.contracts.BasePresenter
 import com.reyesmagos.squarefinder.core.contracts.BaseView
+import com.reyesmagos.squarefinder.core.models.ViewVenue
+import io.reactivex.Observable
 import kotlinx.coroutines.Deferred
 
 interface MapContract {
 
-    interface View : BaseView, OnMapReadyCallback {
+    interface View : BaseView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
         fun showUserLocation(location: Location)
 
@@ -21,9 +24,11 @@ interface MapContract {
 
         fun turnOnLocationManagerAsync(): Deferred<Unit>
 
-        fun getUserLocationAsync(): Deferred<Location>
+        fun getUserLocation(): Observable<Location>
 
         fun startResolutionRequest(resolvableApiException: ResolvableApiException)
+
+        fun showCoffeeShops(shops: List<ViewVenue>)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -33,6 +38,8 @@ interface MapContract {
         fun onPermissionsGranted()
 
         fun onLocationManagerEnabled()
+
+        fun onCoffeeShopClick(viewVenue: ViewVenue)
 
     }
 }

@@ -1,13 +1,21 @@
 package com.reyesmagos.squarefinder.map.repository
 
+import com.reyesmagos.squarefinder.core.models.SecurityConfig
 import com.reyesmagos.squarefinder.core.models.Venue
 import com.reyesmagos.squarefinder.core.models.VenueLocation
 import com.reyesmagos.squarefinder.map.service.GetVenueService
 
-class VenueRepositoryImpl(private val venueService: GetVenueService) : VenueRepository {
+class VenueRepositoryImpl(
+    private val venueService: GetVenueService,
+    private val securityConfig: SecurityConfig
+) : VenueRepository {
 
     override suspend fun getVenues(latitude: Double, longitude: Double): List<Venue> {
-        val venues = venueService.getVenues("$latitude,$longitude").response.venues
+        val venues = venueService.getVenues(
+            "$latitude,$longitude",
+            securityConfig.clientId,
+            securityConfig.clientSecret
+        ).response.venues
 
         return venues.map {
             Venue(

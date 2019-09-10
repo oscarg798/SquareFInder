@@ -3,25 +3,26 @@ package com.reyesmagos.squarefinder.map
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
+import com.google.android.material.snackbar.Snackbar
 import com.reyesmagos.squarefinder.core.CoreComponentProvider
 import com.reyesmagos.squarefinder.core.REQUEST_CODE_LOCATION_PERMISSIONS
 import com.reyesmagos.squarefinder.core.REQUEST_ENABLE_LOCATION_MANAGER
+import com.reyesmagos.squarefinder.core.models.ViewVenue
 import com.reyesmagos.squarefinder.map.di.DaggerMapComponent
 import com.reyesmagos.squarefinder.map.di.MapModule
 import com.reyesmagos.squarefinder.map.providers.LocationProvider
 import com.reyesmagos.squarefinder.map.providers.LocationSettingsProvider
+import io.reactivex.Observable
+import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.coroutines.Deferred
 import javax.inject.Inject
 
@@ -37,6 +38,8 @@ class MapActivity : AppCompatActivity(), MapContract.View {
 
     @Inject
     lateinit var presenter: MapContract.Presenter
+
+    private var errorSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +77,19 @@ class MapActivity : AppCompatActivity(), MapContract.View {
         }
     }
 
+    override fun showCoffeeShops(shops: List<ViewVenue>) {
+        shops.forEach {
+            googleMap?.addMarker(
+                MarkerOptions().position(LatLng(it.latitude, it.longitude))
+                    .title(it.name)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+            )?.apply {
+                tag = it
+            }
+        }
+
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>, grantResults: IntArray
@@ -90,7 +106,18 @@ class MapActivity : AppCompatActivity(), MapContract.View {
     }
 
     override fun showError(error: String) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
+        if (errorSnackbar?.isShown == true) {
+            errorSnackbar?.dismiss()
+        }
+        val view = clMain ?: return
+
+        errorSnackbar = Snackbar.make(view, error, Snackbar.LENGTH_INDEFINITE).setAction(
+            getString(R.string.dismiss)
+        ) {
+            errorSnackbar?.dismiss()
+        }
+
+        errorSnackbar?.show()
     }
 
     override fun showError(errorStringId: Int) {
@@ -103,6 +130,8 @@ class MapActivity : AppCompatActivity(), MapContract.View {
             location.longitude
         )
 
+        googleMap?.clear()
+
         googleMap?.addMarker(
             MarkerOptions().position(position)
         )
@@ -114,10 +143,20 @@ class MapActivity : AppCompatActivity(), MapContract.View {
                     .build()
             )
         )
+
+        googleMap?.setOnMarkerClickListener(this)
     }
 
-    override fun getUserLocationAsync(): Deferred<Location> {
-        return locationProvider.getLocationAsync(this)
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        val venue = marker?.tag as? ViewVenue ?: return false
+        marker.showInfoWindow()
+        presenter.onCoffeeShopClick(venue)
+
+        return true
+    }
+
+    override fun getUserLocation(): Observable<Location> {
+        return locationProvider.getLocation(this)
     }
 
     override fun turnOnLocationManagerAsync(): Deferred<Unit> {
@@ -132,6 +171,12 @@ class MapActivity : AppCompatActivity(), MapContract.View {
         }
 
         presenter.onViewReady()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.unBind()
+        locationProvider.disableLocationListener()
     }
 
     override fun startResolutionRequest(resolvableApiException: ResolvableApiException) {

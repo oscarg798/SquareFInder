@@ -129,7 +129,7 @@ class GetVenueServiceTest : MockServerTest() {
 
         //when
         val result = runBlocking {
-            service.getVenues("40.7243,-74.0018")
+            service.getVenues("40.7243,-74.0018", "2", "3")
         }
 
         result shouldNotEqual null

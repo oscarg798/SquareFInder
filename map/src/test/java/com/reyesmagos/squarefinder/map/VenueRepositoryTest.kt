@@ -1,5 +1,6 @@
 package com.reyesmagos.squarefinder.map
 
+import com.reyesmagos.squarefinder.core.models.SecurityConfig
 import com.reyesmagos.squarefinder.map.models.APIVenue
 import com.reyesmagos.squarefinder.map.models.APIVenueLocation
 import com.reyesmagos.squarefinder.map.models.GetVenuesResponse
@@ -26,7 +27,7 @@ class VenueRepositoryTest {
         MockKAnnotations.init(this)
 
         coEvery {
-            getVenueService.getVenues("1.1,2.2")
+            getVenueService.getVenues("1.1,2.2", "2", "3")
         }.answers {
             GetVenuesResponse(
                 VenuesResponse(
@@ -46,7 +47,7 @@ class VenueRepositoryTest {
     @Test
     fun `should get venues`() {
         //Given
-        val repository: VenueRepository = VenueRepositoryImpl(getVenueService)
+        val repository: VenueRepository = VenueRepositoryImpl(getVenueService, SecurityConfig("2","3"))
 
         //When
         val venues = runBlocking {

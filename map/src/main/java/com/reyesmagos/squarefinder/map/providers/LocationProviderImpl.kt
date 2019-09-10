@@ -8,8 +8,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 import com.reyesmagos.squarefinder.map.exceptions.LocationNotFoundException
 import com.reyesmagos.squarefinder.map.exceptions.LocationPermissionsNotGrantedException
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
+import io.reactivex.Observable
 
 class LocationProviderImpl : BaseLocationProvider(),
     LocationProvider {
@@ -18,55 +17,53 @@ class LocationProviderImpl : BaseLocationProvider(),
 
     private var locationCallback: LocationCallback? = null
 
-    override fun getLocationAsync(context: Context): Deferred<Location> {
+    override fun getLocation(context: Context): Observable<Location> {
 
-        val deferred = CompletableDeferred<Location>()
-        disableLocationListener()
+        return Observable.create { emitter ->
 
-        if (Build.VERSION.SDK_INT >= 23 &&
-            ContextCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(
-                context,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+            disableLocationListener()
 
-            deferred.completeExceptionally(LocationPermissionsNotGrantedException())
-        }
+            if (Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+                emitter.onError(LocationPermissionsNotGrantedException())
+            }
 
-        locationCallback = object : LocationCallback() {
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
-            override fun onLocationResult(result: LocationResult?) {
-                super.onLocationResult(result)
+            locationCallback = object : LocationCallback() {
 
-                if (result?.lastLocation != null) {
-                    deferred.complete(result.lastLocation)
+                override fun onLocationResult(result: LocationResult?) {
+                    super.onLocationResult(result)
 
-                } else {
-                    deferred.completeExceptionally(LocationNotFoundException())
+                    if (result?.lastLocation != null) {
+                        emitter.onNext(result.lastLocation)
+
+                    } else {
+                        emitter.onError(LocationNotFoundException())
+                    }
                 }
-                disableLocationListener()
 
+                override fun onLocationAvailability(p0: LocationAvailability?) {
+                    super.onLocationAvailability(p0)
+                    p0?.isLocationAvailable
+                }
             }
 
-            override fun onLocationAvailability(p0: LocationAvailability?) {
-                super.onLocationAvailability(p0)
-                p0?.isLocationAvailable
-            }
+            fusedLocationProviderClient?.requestLocationUpdates(
+                getLocationRequest(),
+                locationCallback!!,
+                null
+            )
         }
-
-        fusedLocationProviderClient?.requestLocationUpdates(
-            getLocationRequest(),
-            locationCallback!!,
-            null
-        )
-
-        return deferred
     }
 
     override fun disableLocationListener() {

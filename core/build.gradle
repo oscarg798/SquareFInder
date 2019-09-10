@@ -30,6 +30,10 @@ android {
 
 kapt { generateStubs = true }
 
+androidExtensions {
+    experimental = true
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -67,6 +71,7 @@ dependencies {
     implementation applicationDependencies.kotlinCoroutines
     implementation applicationDependencies.kotlinCoroutinesAndroid
 
+    //Retrofit
     implementation networkingDependencies.retrofit
     implementation networkingDependencies.gsonConverter
     implementation networkingDependencies.coroutineAdapter
