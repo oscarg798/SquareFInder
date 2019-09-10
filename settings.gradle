@@ -1,0 +1,2 @@
+include ':app', ':core', ':map'
+rootProject.name='SquareFinder'

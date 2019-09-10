@@ -1,0 +1,109 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+    testOptions {
+        animationsDisabled = true
+        unitTests {
+            includeAndroidResources true
+        }
+    }
+
+}
+
+androidExtensions {
+    experimental = true
+}
+
+kapt { generateStubs = true }
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    def androidDependencies = rootProject.ext.androidDependencies
+    def acceptanceTesting = rootProject.ext.acceptanceTesting
+    def applicationDependencies = rootProject.ext.mainApplication
+    def testDependencies = rootProject.ext.unitTesting
+    def networkingDependencies = rootProject.ext.networking
+    def developmentDependencies = rootProject.ext.development
+
+    implementation applicationDependencies.picasso
+    implementation androidDependencies.appCompat
+    implementation androidDependencies.cardView
+    implementation androidDependencies.recyclerView
+    implementation androidDependencies.design
+    implementation androidDependencies.constraintLayout
+    implementation androidDependencies.appCompatV4
+    implementation androidDependencies.appCompatV7
+    implementation androidDependencies.preferenceV7
+    implementation androidDependencies.preferenceV14
+    implementation androidDependencies.customTabs
+    implementation androidDependencies.multidex
+
+    implementation applicationDependencies.maps
+    implementation applicationDependencies.location
+
+    //Test
+    testImplementation testDependencies.mockk
+    testImplementation testDependencies.mockitoCore
+    testImplementation testDependencies.junit
+    testImplementation testDependencies.kluent
+    testImplementation testDependencies.robolectric
+    testImplementation acceptanceTesting.testRunner
+    testImplementation testDependencies.junitTest
+    testImplementation acceptanceTesting.espressoIntents
+    testImplementation acceptanceTesting.espressoCore
+    debugImplementation acceptanceTesting.fragmentScenario
+    testImplementation acceptanceTesting.testRunner
+    testImplementation acceptanceTesting.androidAnnotations
+    testImplementation acceptanceTesting.truth
+    testImplementation applicationDependencies.dagger
+    testImplementation applicationDependencies.daggerAndroidSupport
+    kaptTest applicationDependencies.daggerCompiler
+    kaptTest applicationDependencies.daggerAndroidProcessor
+    testImplementation applicationDependencies.kotlinCoroutines
+    testImplementation applicationDependencies.kotlinCoroutinesAndroid
+
+    //Dagger
+    implementation applicationDependencies.dagger
+    implementation applicationDependencies.daggerAndroidSupport
+    kapt applicationDependencies.daggerCompiler
+    kapt applicationDependencies.daggerAndroidProcessor
+
+
+    //Aceptance Testing
+    androidTestImplementation acceptanceTesting.androidAnnotations
+    androidTestImplementation acceptanceTesting.mockWebServer
+    androidTestImplementation acceptanceTesting.testRunner
+    androidTestImplementation acceptanceTesting.testRules
+    androidTestImplementation acceptanceTesting.espressoCore
+    androidTestImplementation acceptanceTesting.espressoContrib
+    androidTestImplementation acceptanceTesting.espressoIntents
+    androidTestImplementation acceptanceTesting.uiAutomator
+    androidTestImplementation testDependencies.mockitoCore
+    androidTestImplementation testDependencies.mockk
+    androidTestImplementation testDependencies.junitTest
+    implementation project(path: ':core')
+}

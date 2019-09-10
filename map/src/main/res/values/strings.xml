@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Map</string>
+    <string name="location_permission_error">You must grant permissions</string>
+    <string name="default_error">Something went wrong please try again later</string>
+</resources>
