@@ -27,4 +27,5 @@ class MapModule {
     fun provideMapPresenter(coroutineContextProvider: CoroutineContextProvider): MapContract.Presenter {
         return MapActivityPresenter(coroutineContextProvider)
     }
+
 }

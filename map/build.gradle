@@ -62,8 +62,20 @@ dependencies {
     implementation androidDependencies.customTabs
     implementation androidDependencies.multidex
 
+    //Play services
     implementation applicationDependencies.maps
     implementation applicationDependencies.location
+
+    //Coroutines
+    implementation applicationDependencies.kotlinCoroutines
+    implementation applicationDependencies.kotlinCoroutinesAndroid
+
+    //Retrofit
+    implementation networkingDependencies.retrofit
+    implementation networkingDependencies.gsonConverter
+    implementation networkingDependencies.coroutineAdapter
+    implementation networkingDependencies.okhttp3
+    testImplementation networkingDependencies.okhttpLoggingInterceptor
 
     //Test
     testImplementation testDependencies.mockk
@@ -85,6 +97,7 @@ dependencies {
     kaptTest applicationDependencies.daggerAndroidProcessor
     testImplementation applicationDependencies.kotlinCoroutines
     testImplementation applicationDependencies.kotlinCoroutinesAndroid
+    testImplementation acceptanceTesting.mockWebServer
 
     //Dagger
     implementation applicationDependencies.dagger

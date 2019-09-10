@@ -1,6 +1,6 @@
 package com.reyesmagos.squarefinder.map.di
 
-import com.reyesmagos.squarefinder.core.CoreComponent
+import com.reyesmagos.squarefinder.core.di.CoreComponent
 import com.reyesmagos.squarefinder.map.MapActivity
 import dagger.Component
 
