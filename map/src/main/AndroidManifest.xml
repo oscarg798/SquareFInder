@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application>
         <activity android:name=".MapActivity"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/MapActivityTheme"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

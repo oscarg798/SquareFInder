@@ -4,7 +4,7 @@
 
     <application>
         <activity android:name=".VenueDetailActivity"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/DetailActivityTheme"/>
     </application>
 
 </manifest>
