@@ -2,6 +2,7 @@ package com.reyesmagos.squarefinder
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.reyesmagos.squarefinder.core.CoreApplication
@@ -20,6 +21,18 @@ class SplashScreenActivityTest  {
         ActivityScenario.launch(SplashScreenActivity::class.java).onActivity {
             //When
             val view = it.findViewById<ImageView>(R.id.ivIcon)
+
+            //then
+            view.visibility shouldEqual View.VISIBLE
+        }
+    }
+
+    @Test
+    fun `should have a view to show a progress`(){
+        //Given
+        ActivityScenario.launch(SplashScreenActivity::class.java).onActivity {
+            //When
+            val view = it.findViewById<ProgressBar>(R.id.progress)
 
             //then
             view.visibility shouldEqual View.VISIBLE
