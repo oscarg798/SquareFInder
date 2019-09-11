@@ -1,2 +1,2 @@
-include ':app', ':core', ':map'
+include ':app', ':core', ':map', ':detail'
 rootProject.name='SquareFinder'

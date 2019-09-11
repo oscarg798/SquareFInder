@@ -29,6 +29,8 @@ interface MapContract {
         fun startResolutionRequest(resolvableApiException: ResolvableApiException)
 
         fun showCoffeeShops(shops: List<ViewVenue>)
+
+        fun openShowDetail(viewVenue: ViewVenue)
     }
 
     interface Presenter : BasePresenter<View> {

@@ -13,9 +13,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
-import com.reyesmagos.squarefinder.core.CoreComponentProvider
-import com.reyesmagos.squarefinder.core.REQUEST_CODE_LOCATION_PERMISSIONS
-import com.reyesmagos.squarefinder.core.REQUEST_ENABLE_LOCATION_MANAGER
+import com.reyesmagos.squarefinder.core.*
 import com.reyesmagos.squarefinder.core.models.ViewVenue
 import com.reyesmagos.squarefinder.map.di.DaggerMapComponent
 import com.reyesmagos.squarefinder.map.di.MapModule
@@ -52,12 +50,15 @@ class MapActivity : AppCompatActivity(), MapContract.View {
             .inject(this)
 
         presenter.bind(this)
-        initMap()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        initMap()
     }
 
     private fun initMap() {
-        (supportFragmentManager?.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(
+        (supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment)?.getMapAsync(
             this
         )
     }
@@ -173,10 +174,20 @@ class MapActivity : AppCompatActivity(), MapContract.View {
         presenter.onViewReady()
     }
 
+    override fun openShowDetail(viewVenue: ViewVenue) {
+        startDeepLinkIntent(DETAIL_DEEP_LINK, Bundle().apply {
+            putParcelable(ARGUMENT_VIEW_VENUE,viewVenue)
+        })
+    }
+
     override fun onStop() {
         super.onStop()
-        presenter.unBind()
         locationProvider.disableLocationListener()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.unBind()
     }
 
     override fun startResolutionRequest(resolvableApiException: ResolvableApiException) {

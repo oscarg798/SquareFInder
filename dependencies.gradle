@@ -71,7 +71,7 @@ ext {
     kluent_version = "1.14"
     mockWebServer = "4.2.0"
     testRunnerVersion = "1.0.2"
-    espresso_version = "3.0.2"
+    espresso_version = "3.1.0"
     truth_version = "1.0.0"
     android_x_fragment_scenario = "1.1.0-beta01"
 

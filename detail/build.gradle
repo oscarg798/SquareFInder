@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+
 android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
-
 
     defaultConfig {
         minSdkVersion 21
@@ -13,9 +13,10 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.reyesmagos.squarefinder.detail.CustomTestRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
+
 
     buildTypes {
         release {
@@ -26,14 +27,7 @@ android {
 
     testOptions {
         animationsDisabled = true
-        unitTests {
-            includeAndroidResources true
-        }
     }
-}
-
-androidExtensions {
-    experimental = true
 }
 
 kapt { generateStubs = true }
@@ -60,46 +54,9 @@ dependencies {
     implementation androidDependencies.customTabs
     implementation androidDependencies.multidex
 
-    //Play services
-    implementation applicationDependencies.maps
-    implementation applicationDependencies.location
-
     //Coroutines
     implementation applicationDependencies.kotlinCoroutines
     implementation applicationDependencies.kotlinCoroutinesAndroid
-
-    //Retrofit
-    implementation networkingDependencies.retrofit
-    implementation networkingDependencies.gsonConverter
-    implementation networkingDependencies.coroutineAdapter
-    implementation networkingDependencies.okhttp3
-    testImplementation networkingDependencies.okhttpLoggingInterceptor
-
-    //Test
-    testImplementation testDependencies.mockk
-    testImplementation testDependencies.mockitoCore
-    testImplementation testDependencies.junit
-    testImplementation testDependencies.kluent
-    testImplementation testDependencies.robolectric
-    testImplementation acceptanceTesting.testRunner
-    testImplementation testDependencies.junitTest
-    testImplementation acceptanceTesting.espressoIntents
-    testImplementation acceptanceTesting.espressoCore
-    debugImplementation acceptanceTesting.fragmentScenario
-    testImplementation acceptanceTesting.testRunner
-    testImplementation acceptanceTesting.androidAnnotations
-    testImplementation acceptanceTesting.truth
-    testImplementation applicationDependencies.dagger
-    testImplementation applicationDependencies.daggerAndroidSupport
-    kaptTest applicationDependencies.daggerCompiler
-    kaptTest applicationDependencies.daggerAndroidProcessor
-    testImplementation applicationDependencies.kotlinCoroutines
-    testImplementation applicationDependencies.kotlinCoroutinesAndroid
-    testImplementation acceptanceTesting.mockWebServer
-
-
-    implementation 'com.airbnb:deeplinkdispatch:4.1.0'
-    kapt 'com.airbnb:deeplinkdispatch-processor:4.1.0'
 
     //Dagger
     implementation applicationDependencies.dagger
@@ -107,20 +64,18 @@ dependencies {
     kapt applicationDependencies.daggerCompiler
     kapt applicationDependencies.daggerAndroidProcessor
 
-    implementation("io.reactivex.rxjava2:rxkotlin:2.3.0")
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    //Test
+    //Aceptance Testing
 
-    //Testing
-    androidTestImplementation acceptanceTesting.androidAnnotations
-    androidTestImplementation acceptanceTesting.mockWebServer
     androidTestImplementation acceptanceTesting.testRunner
-    androidTestImplementation acceptanceTesting.testRules
     androidTestImplementation acceptanceTesting.espressoCore
     androidTestImplementation acceptanceTesting.espressoContrib
     androidTestImplementation acceptanceTesting.espressoIntents
     androidTestImplementation acceptanceTesting.uiAutomator
-    androidTestImplementation testDependencies.mockitoCore
-    androidTestImplementation testDependencies.mockk
-    androidTestImplementation testDependencies.junitTest
+
     implementation project(path: ':core')
+
+    implementation 'com.airbnb:deeplinkdispatch:4.1.0'
+    kapt 'com.airbnb:deeplinkdispatch-processor:4.1.0'
+
 }

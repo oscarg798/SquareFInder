@@ -91,7 +91,7 @@ class MapActivityPresenter(
     }
 
     override fun onCoffeeShopClick(viewVenue: ViewVenue) {
-        Log.i("MArker", viewVenue.name)
+       view?.openShowDetail(viewVenue)
     }
 
     override fun unBind() {

@@ -67,6 +67,10 @@ dependencies {
     implementation networkingDependencies.okhttp3
     implementation networkingDependencies.okhttpLoggingInterceptor
 
+
+    implementation 'com.airbnb:deeplinkdispatch:4.1.0'
+    kapt 'com.airbnb:deeplinkdispatch-processor:4.1.0'
+
     //Testing
     //Test
     testImplementation testDependencies.mockk
@@ -92,4 +96,5 @@ dependencies {
 
     implementation project(path: ':map')
     implementation project(path: ':core')
+    implementation project(path: ':detail')
 }
