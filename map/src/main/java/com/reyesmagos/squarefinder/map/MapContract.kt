@@ -12,7 +12,8 @@ import kotlinx.coroutines.Deferred
 
 interface MapContract {
 
-    interface View : BaseView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+    interface View : BaseView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnInfoWindowClickListener {
 
         fun showUserLocation(location: Location)
 

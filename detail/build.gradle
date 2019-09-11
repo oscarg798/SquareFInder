@@ -64,9 +64,7 @@ dependencies {
     kapt applicationDependencies.daggerCompiler
     kapt applicationDependencies.daggerAndroidProcessor
 
-    //Test
     //Aceptance Testing
-
     androidTestImplementation acceptanceTesting.testRunner
     androidTestImplementation acceptanceTesting.espressoCore
     androidTestImplementation acceptanceTesting.espressoContrib

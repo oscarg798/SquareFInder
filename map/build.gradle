@@ -122,5 +122,13 @@ dependencies {
     androidTestImplementation testDependencies.mockitoCore
     androidTestImplementation testDependencies.mockk
     androidTestImplementation testDependencies.junitTest
+
+    //Aceptance Testing
+    androidTestImplementation acceptanceTesting.testRunner
+    androidTestImplementation acceptanceTesting.espressoCore
+    androidTestImplementation acceptanceTesting.espressoContrib
+    androidTestImplementation acceptanceTesting.espressoIntents
+    androidTestImplementation acceptanceTesting.uiAutomator
+    
     implementation project(path: ':core')
 }

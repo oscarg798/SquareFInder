@@ -2,6 +2,7 @@ package com.reyesmagos.squarefinder.detail
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.reyesmagos.squarefinder.core.ARGUMENT_VIEW_VENUE
 import com.reyesmagos.squarefinder.core.CoreComponentProvider
@@ -29,9 +30,13 @@ class VenueDetailActivity : AppCompatActivity(), VenueDetailContract.View {
             .build()
             .inject(this)
 
-        val arguments = intent?.getParcelableExtra<ViewVenue>(ARGUMENT_VIEW_VENUE) ?: throw ViewVenueNoPassedAsParameterException()
+        val arguments = intent?.getParcelableExtra<ViewVenue>(ARGUMENT_VIEW_VENUE)
+            ?: throw ViewVenueNoPassedAsParameterException()
         presenter.bind(this)
         presenter.onViewReady(arguments)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     override fun showCoffeeName(name: String) {
@@ -40,5 +45,17 @@ class VenueDetailActivity : AppCompatActivity(), VenueDetailContract.View {
 
     override fun showAddress(address: String) {
         tvAddress?.text = address
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        super.onOptionsItemSelected(item)
+
+        if(item?.itemId == android.R.id.home){
+            onBackPressed()
+            return true
+        }
+
+
+        return false
     }
 }

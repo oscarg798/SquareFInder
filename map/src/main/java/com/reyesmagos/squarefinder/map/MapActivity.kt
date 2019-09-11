@@ -4,6 +4,11 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -82,7 +87,7 @@ class MapActivity : AppCompatActivity(), MapContract.View {
         shops.forEach {
             googleMap?.addMarker(
                 MarkerOptions().position(LatLng(it.latitude, it.longitude))
-                    .title(it.name)
+                    .title("${it.name} ... Tap for more info")
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
             )?.apply {
                 tag = it
@@ -134,7 +139,7 @@ class MapActivity : AppCompatActivity(), MapContract.View {
         googleMap?.clear()
 
         googleMap?.addMarker(
-            MarkerOptions().position(position)
+            MarkerOptions().position(position).title(getString(R.string.your_location_pin_title))
         )
 
         googleMap?.animateCamera(
@@ -146,14 +151,40 @@ class MapActivity : AppCompatActivity(), MapContract.View {
         )
 
         googleMap?.setOnMarkerClickListener(this)
+        googleMap?.setOnInfoWindowClickListener(this)
+
+        googleMap?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+            override fun getInfoContents(marker: Marker): View {
+                return getInfoWindow(marker.tag as ViewVenue)
+            }
+
+            override fun getInfoWindow(marker: Marker): View {
+                return getInfoWindow(marker.tag as ViewVenue)
+            }
+
+        })
+    }
+
+    private fun getInfoWindow(viewVenue: ViewVenue): View {
+        val view = LayoutInflater.from(this).inflate(R.layout.custom_info_window, null)
+        with(view as ViewGroup) {
+            findViewById<TextView>(R.id.tvName).text = viewVenue.name
+            findViewById<TextView>(R.id.tvLatitude).text = "Lat: ${viewVenue.latitude}"
+            findViewById<TextView>(R.id.tvLongitude).text = "Lng: ${viewVenue.longitude}"
+        }
+
+        return view
     }
 
     override fun onMarkerClick(marker: Marker?): Boolean {
-        val venue = marker?.tag as? ViewVenue ?: return false
-        marker.showInfoWindow()
-        presenter.onCoffeeShopClick(venue)
+        marker?.showInfoWindow()
 
         return true
+    }
+
+    override fun onInfoWindowClick(marker: Marker?) {
+        val venue = marker?.tag as? ViewVenue ?: return
+        presenter.onCoffeeShopClick(venue)
     }
 
     override fun getUserLocation(): Observable<Location> {
@@ -176,7 +207,7 @@ class MapActivity : AppCompatActivity(), MapContract.View {
 
     override fun openShowDetail(viewVenue: ViewVenue) {
         startDeepLinkIntent(DETAIL_DEEP_LINK, Bundle().apply {
-            putParcelable(ARGUMENT_VIEW_VENUE,viewVenue)
+            putParcelable(ARGUMENT_VIEW_VENUE, viewVenue)
         })
     }
 
